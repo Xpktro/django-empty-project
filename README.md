@@ -1,4 +1,4 @@
-django-empty-project
-====================
+Django 1.6.x template
+=====================
 
-My django empty project layout, based on BitZeppelin's intern project default skeleton.
+Just copy this folder and you're ready to go.

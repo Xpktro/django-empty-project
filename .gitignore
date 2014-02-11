@@ -1,11 +1,8 @@
-*.log
-*.pot
 *.pyc
-local_settings.py
+*.pyo
+*.~
+*.sublime*
+.settings/*
+.idea
 .directory
 .project
-.pydevproject
-.settings/*
-*.sublime*
-env/*
-.idea

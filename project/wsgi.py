@@ -1,74 +1,20 @@
-#!/usr/bin/env python
-
 """
 WSGI config for this project.
 
-This module contains the WSGI application used by Django's development server
-and any production WSGI deployments. It should expose a module-level variable
-named ``application``. Django's ``runserver`` and ``runfcgi`` commands discover
-this application via the ``WSGI_APPLICATION`` setting.
+It exposes the WSGI callable as a module-level variable named ``application``.
 
-Usually you will have the standard Django WSGI application here, but it also
-might make sense to replace the whole Django WSGI application with a custom one
-that later delegates to the Django one. For example, you could introduce WSGI
-middleware here, or combine a Django application with an application of another
-framework.
-
+For more information on this file, see
+https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/
 """
+
 import os
 import sys
-import site
-from os.path import dirname, join, realpath
-from distutils.sysconfig import get_python_lib
+import settings
 
-ROOT_DIR = realpath(join(dirname(__file__), '..'))
-PYTHON_VERSION = '%d.%d' % (sys.version_info[0], sys.version_info[1])
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
-USE_VIRTUAL_ENV = False
+for path in settings.PATHS:
+    sys.path.insert(0, path)
 
-if USE_VIRTUAL_ENV:
-    SITE_PACKAGES_DIR = '%s/env/lib/python%s/site-packages' % (
-        ROOT_DIR,
-        PYTHON_VERSION
-    )
-else:
-    SITE_PACKAGES_DIR = get_python_lib()
-
-ALLDIRS = [SITE_PACKAGES_DIR]
-
-# Remember original sys.path.
-prev_sys_path = list(sys.path)
-
-# Add each new site-packages directory.
-for directory in ALLDIRS:
-    site.addsitedir(directory)
-
-# Reorder sys.path so new directories at the front.
-new_sys_path = []
-for item in list(sys.path):
-    if item not in prev_sys_path:
-        new_sys_path.append(item)
-        sys.path.remove(item)
-        sys.path[:0] = new_sys_path
-
-# Project-specific paths
-APPS_DIR = realpath(join(ROOT_DIR, 'apps/'))
-PROJ_DIR = realpath(join(ROOT_DIR, 'project/'))
-
-sys.path.insert(0, ROOT_DIR)
-sys.path.insert(1, APPS_DIR)
-sys.path.insert(2, PROJ_DIR)
-
-# Uncomment for debugging purposes
-# print SITE_PACKAGES_DIR
-# sys.exit()
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'project.settings'
-
-# Avoid ``[Errno 13] Permission denied:
-# '/var/www/.python-eggs'`` messages
-os.environ['PYTHON_EGG_CACHE'] = '/tmp/egg-cache'
-
-import django.core.handlers.wsgi
-
-application = django.core.handlers.wsgi.WSGIHandler()
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
